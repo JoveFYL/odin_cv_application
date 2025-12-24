@@ -1,10 +1,10 @@
 import '../styles/styles.css';
 
-function Input({ placeholder, label }: { placeholder: string, label: string }) {
+function Input({ label, inputType }: { label: string, inputType?: string }) {
     return (
         <div className="form-input-component">
-            <input name={'formInput-' + { label }} className="form-input" type="text" placeholder={""} />
-            <label htmlFor={'formInput-' + { label }} className="form-label">{label + ' '}</label>
+            <input id={'formInput-' + label} className="form-input" required type={inputType == null ? "text" : inputType} pattern={inputType == "tel" ? "[ -9]{8,15}" : "[A-Za-z\s'-]+"} placeholder={""} />
+            <label htmlFor={'formInput-' + label} className="form-label">{label + ' '}</label>
         </div>
     )
 }

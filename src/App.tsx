@@ -1,15 +1,21 @@
 import { useState } from 'react'
-import Input from './components/Input'
+import GeneralSection from './components/GeneralSection'
 import './App.css'
+import EducationSection from './components/EducationSection'
+import ExperienceSection from './components/ExperienceSection'
 
 function App() {
-  // const [count, setCount] = useState(0)
+    // const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <Input placeholder="Name" label="Name"></Input>
-    </>
-  )
+    return (
+        <div>
+            <div className="app-general-section-container">
+                <GeneralSection></GeneralSection>
+                <EducationSection></EducationSection>
+                <ExperienceSection></ExperienceSection>
+            </div>
+        </div>
+    )
 }
 
 export default App
