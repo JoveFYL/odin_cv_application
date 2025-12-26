@@ -148,6 +148,7 @@ button {
     width: 100%;
     background-color: rgba(132, 143, 149, 0.198);
     border-radius: 0.1rem;
+    margin-bottom: 1rem;
 }
 
 .resume-section-container {
@@ -196,6 +197,18 @@ button {
     display: flex;
     flex-direction: column;
     align-items: start;
+    max-width: 70%;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.textboxes {
+    text-align: left;
+    text-wrap: wrap;
 }
 
 /* App level */

@@ -6,91 +6,121 @@ import Resume from './components/Resume'
 import { personalInfo, educationInfo, experienceInfo } from './types'
 import './App.css'
 
-function handlePersonalInfoInputChange(e: React.ChangeEvent<HTMLInputElement>, setPersonalInfo: React.Dispatch<React.SetStateAction<personalInfo>>) {
-    const id = e.target.id;
+function handleInputChange<T>(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    setState: React.Dispatch<React.SetStateAction<T>>
+) {
+    const field = e.target.dataset.field as keyof T;
     const value = e.target.value;
 
-    if (id === 'formInput-Full Name') {
-        setPersonalInfo(prevState => ({ ...prevState, name: value }));
-    } else if (id === 'formInput-Email') {
-        setPersonalInfo(prevState => ({ ...prevState, email: value }));
-    } else if (id === 'formInput-Phone Number') {
-        setPersonalInfo(prevState => ({ ...prevState, phone: value }));
-    } else {
-        console.warn('Unhandled exception');
-    }
+    setState(prev => ({
+        ...prev,
+        [field]: value
+    }));
 }
 
-function handleEducationInfoInputChange(e: React.ChangeEvent<HTMLInputElement>, setEducationInfo: React.Dispatch<React.SetStateAction<educationInfo>>) {
-    const id = e.target.id;
+function handleEdits<T extends { id: string }>(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    setState: React.Dispatch<React.SetStateAction<T[]>>,
+    id: string
+) {
+    const field = e.target.dataset.field as keyof T;
     const value = e.target.value;
+    console.log(id, value);
 
-    if (id === 'formInput-School') {
-        setEducationInfo(prevState => ({ ...prevState, school: value }));
-    } else if (id === 'formInput-Degree') {
-        setEducationInfo(prevState => ({ ...prevState, degree: value }));
-    } else if (id === 'formInput-Location') {
-        setEducationInfo(prevState => ({ ...prevState, location: value }));
-    } else if (id === 'formInput-Start Date') {
-        setEducationInfo(prevState => ({ ...prevState, startDate: value }));
-    } else if (id === 'formInput-End Date') {
-        setEducationInfo(prevState => ({ ...prevState, endDate: value }));
-    } else {
-        console.warn('Unhandled exception');
-    }
+    setState(prev => prev.map(item => {
+        // console.log(item.id, id);
+
+        // console.log(item.id === id ? item : "did not find")
+        console.log(item.id == id ? item[field] : "not found");
+        return item.id == id ? { ...item, [field]: value } : item
+    }));
 }
 
-function handleExperienceInfoInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, setExperienceInfo: React.Dispatch<React.SetStateAction<experienceInfo>>) {
-    const id = e.target.id;
-    const value = e.target.value;
-    console.log(value);
+function addEducation(
+    setState: React.Dispatch<React.SetStateAction<educationInfo[]>>,
+    count: number
+) {
+    count++;
+    console.log(count);
 
-    if (id === 'formInput-Company Name') {
-        setExperienceInfo(prevState => ({ ...prevState, companyName: value }));
-    } else if (id === 'formInput-Position') {
-        setExperienceInfo(prevState => ({ ...prevState, position: value }));
-    } else if (id === 'formInput-Start Date') {
-        setExperienceInfo(prevState => ({ ...prevState, startDate: value }));
-    } else if (id === 'formInput-End Date') {
-        setExperienceInfo(prevState => ({ ...prevState, endDate: value }));
-    } else if (id === 'formInput-Job Description') {
-        setExperienceInfo(prevState => ({ ...prevState, jobDescription: value }));
-    } else {
-        console.warn('Unhandled exception');
-    }
+    setState(prev => [
+        ...prev,
+        {
+            id: crypto.randomUUID(),
+            school: '',
+            degree: '',
+            location: '',
+            startDate: '',
+            endDate: ''
+        }
+    ])
 }
+
+function addExperience(
+    setState: React.Dispatch<React.SetStateAction<experienceInfo[]>>,
+    count: number
+) {
+    count++;
+
+    setState(prev => [
+        ...prev,
+        {
+            id: crypto.randomUUID(),
+            companyName: '',
+            position: '',
+            startDate: '',
+            endDate: '',
+            jobDescription: ''
+        }
+    ])
+}
+
 
 function App() {
     const [personalInfo, setPersonalInfo] = useState<personalInfo>({
-        name: '',
+        fullname: '',
         email: '',
-        phone: ''
-    })
+        phonenumber: ''
+    });
 
-    const [experienceInfo, setExperienceInfo] = useState<experienceInfo>({
+    const [experienceInfos, setExperienceInfos] = useState<experienceInfo[]>([{
+        id: crypto.randomUUID(),
         companyName: '',
         position: '',
         startDate: '',
         endDate: '',
         jobDescription: ''
-    })
+    }]);
 
-    const [educationInfo, setEducationInfo] = useState<educationInfo>({
+    const [educationInfos, setEducationInfos] = useState<educationInfo[]>([{
+        id: crypto.randomUUID(),
         school: '',
         degree: '',
         location: '',
         startDate: '',
         endDate: ''
-    })
+    }]);
+
+    let numOfExperienceSections: number = experienceInfos.length;
+    let numOfEducationSections: number = educationInfos.length;
 
     return (
         <div className='app-container'>
             <div className="app-general-section-container">
-                <GeneralSection onChange={e => handlePersonalInfoInputChange(e, setPersonalInfo)} personalInfo={personalInfo}></GeneralSection>
-                <EducationSection onChange={e => handleEducationInfoInputChange(e, setEducationInfo)} educationInfo={educationInfo}></EducationSection>
-                <ExperienceSection onChange={e => handleExperienceInfoInputChange(e, setExperienceInfo)} experienceInfo={experienceInfo}></ExperienceSection>
+                <GeneralSection onChange={e => handleInputChange<personalInfo>(e, setPersonalInfo)} personalInfo={personalInfo}></GeneralSection>
+                <EducationSection
+                    onAdd={() => addEducation(setEducationInfos, numOfEducationSections)}
+                    onChange={e => handleEdits<educationInfo>(e, setEducationInfos, educationInfos[numOfEducationSections === 0 ? 0 : numOfEducationSections - 1].id)}
+                    educationInfo={educationInfos[numOfEducationSections === 0 ? 0 : numOfEducationSections - 1]}
+                ></EducationSection>
+                <ExperienceSection
+                    onAdd={() => addExperience(setExperienceInfos, numOfExperienceSections)}
+                    onChange={e => handleEdits<experienceInfo>(e, setExperienceInfos, experienceInfos[numOfExperienceSections === 0 ? 0 : numOfEducationSections - 1].id)}
+                    experienceInfo={experienceInfos[numOfExperienceSections === 0 ? 0 : numOfExperienceSections - 1]}
+                ></ExperienceSection>
             </div>
-            <Resume personalInfo={personalInfo}></Resume>
+            <Resume personalInfo={personalInfo} educationInfos={educationInfos} experienceInfos={experienceInfos}></Resume>
         </div>
     )
 }

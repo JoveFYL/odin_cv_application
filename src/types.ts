@@ -1,10 +1,11 @@
 export interface personalInfo {
-    name: string;
+    fullname: string;
     email: string;
-    phone: string;
+    phonenumber: string;
 }
 
 export interface educationInfo {
+    id: string;
     school: string;
     degree: string;
     location: string;
@@ -13,6 +14,7 @@ export interface educationInfo {
 }
 
 export interface experienceInfo {
+    id: string;
     companyName: string;
     position: string;
     startDate: string;

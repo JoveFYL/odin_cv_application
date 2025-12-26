@@ -1,15 +1,15 @@
 import { educationInfo } from "../types";
 
-function EducationSectionContent({ ...props }: educationInfo) {
+function EducationSectionContent({ id, school, degree, location, startDate, endDate }: educationInfo) {
     return (
-        <div className='education-content'>
+        <div className='education-content' id={id}>
             <div className='education-content-date'>
-                <p>{props.startDate} - {props.endDate}</p>
+                <p>{startDate} {startDate != '' && '-'} {endDate === new Date().toISOString().slice(0, 10) ? 'Present' : endDate}</p>
             </div>
             <div className='education-content-school-degree'>
-                <h3>{props.school}</h3>
-                <p>{props.degree}</p>
-                <p>{props.location}</p>
+                <h3 className='textboxes'>{school}</h3>
+                <p className='textboxes'>{degree}</p>
+                <p className='textboxes'>{location}</p>
             </div>
         </div>
     )

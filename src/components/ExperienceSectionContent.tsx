@@ -1,15 +1,15 @@
 import { experienceInfo } from "../types";
 
-function ExperienceSectionContent({ ...props }: experienceInfo) {
+function ExperienceSectionContent({ id, companyName, startDate, endDate, position, jobDescription }: experienceInfo) {
     return (
-        <div className='education-content'>
+        <div className='education-content' id={id}>
             <div className='education-content-date'>
-                <p>{props.startDate} - {props.endDate}</p>
+                <p>{startDate} {startDate != '' && '-'} {endDate === new Date().toISOString().slice(0, 10) ? 'Present' : endDate}</p>
             </div>
             <div className='education-content-school-degree'>
-                <h3>{props.companyName}</h3>
-                <p>{props.position}</p>
-                <p>{props.jobDescription}</p>
+                <h3>{companyName}</h3>
+                <p>{position}</p>
+                <p>{jobDescription}</p>
             </div>
         </div>
     )

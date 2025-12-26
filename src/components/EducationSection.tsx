@@ -8,18 +8,22 @@ type educationInfo = {
     endDate: string;
 }
 
-function EducationSection({ onChange, educationInfo }: { onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, educationInfo: educationInfo }) {
+function EducationSection({ educationInfo, onChange, onAdd }: { onAdd: () => void, onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void, educationInfo: educationInfo }) {
     return (
-        <form className="general-section">
+        <form className="general-section" data-form='education'>
             <h2 className="general-section-h2">Education Section</h2>
             <div className="general-section-inputs-container">
-                <Input label={'School'} value={educationInfo.school} onChange={onChange}></Input>
-                <Input label={'Degree'} value={educationInfo.degree} onChange={onChange}></Input>
-                <Input label={'Location'} value={educationInfo.location} onChange={onChange}></Input>
-                <Input label={'Start Date'} inputType="date" value={educationInfo.startDate} onChange={onChange}></Input>
-                <Input label={'End Date'} inputType="date" value={educationInfo.endDate} onChange={onChange}></Input>
+                <Input label={'School'} field={'school'} value={educationInfo.school} onChange={onChange}></Input>
+                <Input label={'Degree'} field={'degree'} value={educationInfo.degree} onChange={onChange}></Input>
+                <Input label={'Location'} field={'location'} value={educationInfo.location} onChange={onChange}></Input>
+                <Input label={'Start Date'} field={'startDate'} inputType="date" value={educationInfo.startDate} onChange={onChange}></Input>
+                <Input label={'End Date'} field={'endDate'} inputType="date" value={educationInfo.endDate} onChange={onChange}></Input>
             </div>
-            <button type="submit" className="general-section-submit-button">Save</button>
+            <div className="buttons-container">
+                <button type="submit" className="general-section-submit-button">Save</button>
+                <button type="button" className="general-section-add-button" onClick={onAdd}>Add</button>
+                <button type="button" className="general-section-edit-button" onClick={onAdd}>Edit</button>
+            </div>
         </form>
     )
 }

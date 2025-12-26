@@ -3,23 +3,29 @@ import EducationSectionContent from './EducationSectionContent';
 import { personalInfo, educationInfo, experienceInfo } from '../types';
 import ExperienceSectionContent from './ExperienceSectionContent';
 
-function Resume({ personalInfo }: { personalInfo: personalInfo }) {
+function Resume({ personalInfo, educationInfos, experienceInfos }: { personalInfo: personalInfo, educationInfos: educationInfo[], experienceInfos: experienceInfo[] }) {
     return (
         <div className='resume-container'>
             <div className='resume-header'>
-                <h1 className='resume-name'>{personalInfo.name}</h1>
+                <h1 className='resume-name'>{personalInfo.fullname}</h1>
                 <div className='resume-general-information'>
                     <p>{personalInfo.email}</p>
-                    <p>{personalInfo.phone}</p>
+                    <p>{personalInfo.phonenumber}</p>
                 </div>
             </div>
-            <div className='resume-section-container'>
+            <div className='resume-section-container' data-form='education'>
                 <h2 className='resume-h2'>Education</h2>
-                <EducationSectionContent startDate={'20/12/2020'} endDate={'present'} degree={'Bachelor of Science in Computer Science'} school={'London City University'} location={'London'}></EducationSectionContent>
+                {educationInfos.map(info => {
+                    console.log(info);
+                    return <EducationSectionContent key={info.id} {...info}></EducationSectionContent>
+                })}
             </div>
-            <div className='resume-section-container'>
+            <div className='resume-section-container' data-form='experience'>
                 <h2 className='resume-h2'>Experience</h2>
-                <ExperienceSectionContent startDate={'20/12/2020'} endDate={'present'} companyName={'Google'} position={'Software Engineering Intern'} jobDescription={'hi hi hi hi internship yay'}></ExperienceSectionContent>
+                {experienceInfos.map(info => {
+                    console.log(info);
+                    return <ExperienceSectionContent key={info.id} {...info}></ExperienceSectionContent>
+                })}
             </div>
         </div>
     )
