@@ -1,7 +1,7 @@
 export interface personalInfo {
-    fullname: string;
+    fullName: string;
     email: string;
-    phonenumber: string;
+    phoneNumber: string;
 }
 
 export interface educationInfo {

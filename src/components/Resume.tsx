@@ -7,10 +7,10 @@ function Resume({ personalInfo, educationInfos, experienceInfos }: { personalInf
     return (
         <div className='resume-container'>
             <div className='resume-header'>
-                <h1 className='resume-name'>{personalInfo.fullname}</h1>
+                <h1 className='resume-name'>{personalInfo.fullName}</h1>
                 <div className='resume-general-information'>
                     <p>{personalInfo.email}</p>
-                    <p>{personalInfo.phonenumber}</p>
+                    <p>{personalInfo.phoneNumber}</p>
                 </div>
             </div>
             <div className='resume-section-container' data-form='education'>

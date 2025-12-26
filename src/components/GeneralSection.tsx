@@ -6,9 +6,9 @@ function GeneralSection({ personalInfo, onChange }: { personalInfo: personalInfo
         <div className="general-section">
             <h2 className="general-section-h2">General Information</h2>
             <div className="general-section-inputs-container">
-                <Input label={'Full Name'} field={'fullName'} onChange={onChange} value={personalInfo.fullname}></Input>
+                <Input label={'Full Name'} field={'fullName'} onChange={onChange} value={personalInfo.fullName}></Input>
                 <Input label={'Email'} field={'email'} inputType="email" onChange={onChange} value={personalInfo.email} ></Input>
-                <Input label={'Phone Number'} field={'phoneNumber'} inputType="tel" onChange={onChange} value={personalInfo.phonenumber}></Input>
+                <Input label={'Phone Number'} field={'phoneNumber'} inputType="tel" onChange={onChange} value={personalInfo.phoneNumber}></Input>
             </div>
         </div>
     )

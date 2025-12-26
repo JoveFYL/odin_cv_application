@@ -29,95 +29,100 @@ function handleEdits<T extends { id: string }>(
     console.log(id, value);
 
     setState(prev => prev.map(item => {
-        // console.log(item.id, id);
-
-        // console.log(item.id === id ? item : "did not find")
-        console.log(item.id == id ? item[field] : "not found");
         return item.id == id ? { ...item, [field]: value } : item
     }));
 }
 
-function addEducation(
-    setState: React.Dispatch<React.SetStateAction<educationInfo[]>>,
-    count: number
-) {
-    count++;
-    console.log(count);
-
-    setState(prev => [
-        ...prev,
-        {
-            id: crypto.randomUUID(),
-            school: '',
-            degree: '',
-            location: '',
-            startDate: '',
-            endDate: ''
-        }
-    ])
+function handleSaveDraft<T extends { id: string }>(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    setState: React.Dispatch<React.SetStateAction<T>>,
+    infos: T[],
+    draftId: string) {
+    e.preventDefault();
+    const draft = infos.find(info => info.id === draftId);
+    if (draft) {
+        setState(draft);
+    } else {
+        console.error("Could not find draft");
+    }
+    console.log(draft!.id);
 }
 
-function addExperience(
-    setState: React.Dispatch<React.SetStateAction<experienceInfo[]>>,
-    count: number
+function handleEditDraft(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    setState: React.Dispatch<React.SetStateAction<string>>
 ) {
-    count++;
-
-    setState(prev => [
-        ...prev,
-        {
-            id: crypto.randomUUID(),
-            companyName: '',
-            position: '',
-            startDate: '',
-            endDate: '',
-            jobDescription: ''
-        }
-    ])
+    const id = e.currentTarget.dataset.id;
+    if (id != null) {
+        setState(id);
+        console.log(id);
+    } else {
+        console.error("ID not found for editing draft.");
+    }
 }
 
+function createEmptyEducation(): educationInfo {
+    return {
+        id: crypto.randomUUID(),
+        school: 'Keyboard University',
+        degree: '',
+        location: '',
+        startDate: '',
+        endDate: ''
+    };
+}
 
-function App() {
-    const [personalInfo, setPersonalInfo] = useState<personalInfo>({
-        fullname: '',
-        email: '',
-        phonenumber: ''
-    });
-
-    const [experienceInfos, setExperienceInfos] = useState<experienceInfo[]>([{
+function createEmptyExperience(): experienceInfo {
+    return {
         id: crypto.randomUUID(),
         companyName: '',
         position: '',
         startDate: '',
         endDate: '',
         jobDescription: ''
-    }]);
+    };
+}
 
-    const [educationInfos, setEducationInfos] = useState<educationInfo[]>([{
-        id: crypto.randomUUID(),
-        school: '',
-        degree: '',
-        location: '',
-        startDate: '',
-        endDate: ''
-    }]);
+function App() {
+    const emptyEducation: educationInfo = createEmptyEducation();
+    const trash: educationInfo = createEmptyEducation();
+    const emptyExperience: experienceInfo = createEmptyExperience();
 
-    let numOfExperienceSections: number = experienceInfos.length;
-    let numOfEducationSections: number = educationInfos.length;
+    const [personalInfo, setPersonalInfo] = useState<personalInfo>({
+        fullName: '',
+        email: '',
+        phoneNumber: ''
+    });
+
+    const [experienceInfos, setExperienceInfos] = useState<experienceInfo[]>([{ ...emptyExperience }]);
+    const [educationInfos, setEducationInfos] = useState<educationInfo[]>([{ ...emptyEducation }, { ...trash }]);
+    const [educationDraftId, setEducationDraftId] = useState<string>(emptyEducation.id);
+    const [experienceDraftId, setExperienceDraftId] = useState<string>(emptyExperience.id);
+    const [savedEducation, setSavedEducation] = useState<educationInfo>({ ...emptyEducation });
+    const [savedExperience, setSavedExperience] = useState<experienceInfo>({ ...emptyExperience });
 
     return (
         <div className='app-container'>
             <div className="app-general-section-container">
                 <GeneralSection onChange={e => handleInputChange<personalInfo>(e, setPersonalInfo)} personalInfo={personalInfo}></GeneralSection>
                 <EducationSection
-                    onAdd={() => addEducation(setEducationInfos, numOfEducationSections)}
-                    onChange={e => handleEdits<educationInfo>(e, setEducationInfos, educationInfos[numOfEducationSections === 0 ? 0 : numOfEducationSections - 1].id)}
-                    educationInfo={educationInfos[numOfEducationSections === 0 ? 0 : numOfEducationSections - 1]}
+                    onChange={e => handleEdits<educationInfo>(e, setEducationInfos, educationDraftId)}
+                    educationInfo={educationInfos.find(info => info.id === educationDraftId) || educationInfos[0]}
+                    onSave={e => handleSaveDraft<educationInfo>(e, setSavedEducation, educationInfos, educationDraftId)}
                 ></EducationSection>
+                <div className='education-list-container'>
+                    {educationInfos.map(info => {
+                        return (
+                            <div key={info.id} className='education-list-item' data-id={info.id}>
+                                <p>{info.school}</p>
+                                <button type="button" className="general-section-edit-button" onClick={e => handleEditDraft(e, setEducationDraftId)} data-id={info.id}>Edit</button>
+                            </div>
+                        )
+                    })}
+                </div>
                 <ExperienceSection
-                    onAdd={() => addExperience(setExperienceInfos, numOfExperienceSections)}
-                    onChange={e => handleEdits<experienceInfo>(e, setExperienceInfos, experienceInfos[numOfExperienceSections === 0 ? 0 : numOfEducationSections - 1].id)}
-                    experienceInfo={experienceInfos[numOfExperienceSections === 0 ? 0 : numOfExperienceSections - 1]}
+                    onChange={e => handleEdits<experienceInfo>(e, setExperienceInfos, experienceDraftId)}
+                    experienceInfo={experienceInfos.find(info => info.id === experienceDraftId || experienceInfos[0].id)!}
                 ></ExperienceSection>
             </div>
             <Resume personalInfo={personalInfo} educationInfos={educationInfos} experienceInfos={experienceInfos}></Resume>

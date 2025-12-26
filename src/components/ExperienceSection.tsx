@@ -1,7 +1,7 @@
 import Input from "./Input";
 import { experienceInfo } from "../types";
 
-function ExperienceSection({ experienceInfo, onChange, onAdd }: { onAdd: () => void, onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void, experienceInfo: experienceInfo }) {
+function ExperienceSection({ experienceInfo, onChange, onSave }: { onSave?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void, onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void, experienceInfo: experienceInfo }) {
     const textAreaId = crypto.randomUUID();
     return (
         <form className="general-section" data-form='experience'>
@@ -18,7 +18,7 @@ function ExperienceSection({ experienceInfo, onChange, onAdd }: { onAdd: () => v
             </div>
             <div className="buttons-container">
                 <button type="submit" className="general-section-submit-button">Save</button>
-                <button type="button" className="general-section-add-button" onClick={onAdd}>Add</button>
+                <button type="button" className="general-section-add-button" onClick={onSave}>Add</button>
             </div>
         </form>
     )
