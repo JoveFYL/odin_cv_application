@@ -12,13 +12,12 @@ function ExperienceSection({ experienceInfo, onChange, onSave }: { onSave?: (e: 
                 <Input label={'Start Date'} field={'startDate'} inputType="date" value={experienceInfo.startDate} onChange={onChange}></Input>
                 <Input label={'End Date'} field={'endDate'} inputType="date" value={experienceInfo.endDate} onChange={onChange}></Input>
                 <div className="form-input-component">
-                    <textarea className="form-textarea" id={crypto.randomUUID()} placeholder="" value={experienceInfo.jobDescription} onChange={onChange} data-field={"jobDescription"} />
+                    <textarea className="form-textarea" id={textAreaId} placeholder="" value={experienceInfo.jobDescription} onChange={onChange} data-field={"jobDescription"} />
                     <label className="form-label-textarea form-label" htmlFor={textAreaId}>Job Description </label>
                 </div>
             </div>
             <div className="buttons-container">
-                <button type="submit" className="general-section-submit-button">Save</button>
-                <button type="button" className="general-section-add-button" onClick={onSave}>Add</button>
+                <button type="submit" className="general-section-submit-button" onClick={onSave}>Save</button>
             </div>
         </form>
     )

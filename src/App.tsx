@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import GeneralSection from './components/GeneralSection'
 import EducationSection from './components/EducationSection'
 import ExperienceSection from './components/ExperienceSection'
@@ -35,13 +35,28 @@ function handleEdits<T extends { id: string }>(
 
 function handleSaveDraft<T extends { id: string }>(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    setState: React.Dispatch<React.SetStateAction<T>>,
+    setInfos: React.Dispatch<React.SetStateAction<T[]>>,
+    setNewDraft: React.Dispatch<React.SetStateAction<string>>,
+    createNewDraft: () => T,
     infos: T[],
-    draftId: string) {
+    draftId: string
+) {
+    // check if the form is valid e.g. required fields are filled
+    const form = e.currentTarget.form;
+    if (!form || !form.checkValidity()) {
+        form?.reportValidity();
+        return;
+    }
+
     e.preventDefault();
+    console.log(draftId)
     const draft = infos.find(info => info.id === draftId);
     if (draft) {
-        setState(draft);
+        // create new draft and add it to the infos array and set it as the new draft
+        const newDraft = createNewDraft();
+        setInfos(prev => [...prev, newDraft]);
+        setNewDraft(newDraft.id);
+        console.log(newDraft.id);
     } else {
         console.error("Could not find draft");
     }
@@ -61,10 +76,30 @@ function handleEditDraft(
     }
 }
 
+function handleDelete<T extends { id: string }>(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    setInfos: React.Dispatch<React.SetStateAction<T[]>>,
+    setEducationDraftId: React.Dispatch<React.SetStateAction<string>>,
+    id: string
+) {
+    e.preventDefault();
+
+    setInfos(prev => {
+        if (prev.length <= 1) {
+            console.error("Cannot delete one or less items.");
+            return prev;
+        }
+        const updated = prev.filter(info => info.id !== id);
+
+        setEducationDraftId(updated[0].id);
+        return updated;
+    });
+}
+
 function createEmptyEducation(): educationInfo {
     return {
         id: crypto.randomUUID(),
-        school: 'Keyboard University',
+        school: 'Your Draft',
         degree: '',
         location: '',
         startDate: '',
@@ -75,7 +110,7 @@ function createEmptyEducation(): educationInfo {
 function createEmptyExperience(): experienceInfo {
     return {
         id: crypto.randomUUID(),
-        companyName: '',
+        companyName: 'Your Draft',
         position: '',
         startDate: '',
         endDate: '',
@@ -85,7 +120,6 @@ function createEmptyExperience(): experienceInfo {
 
 function App() {
     const emptyEducation: educationInfo = createEmptyEducation();
-    const trash: educationInfo = createEmptyEducation();
     const emptyExperience: experienceInfo = createEmptyExperience();
 
     const [personalInfo, setPersonalInfo] = useState<personalInfo>({
@@ -95,11 +129,9 @@ function App() {
     });
 
     const [experienceInfos, setExperienceInfos] = useState<experienceInfo[]>([{ ...emptyExperience }]);
-    const [educationInfos, setEducationInfos] = useState<educationInfo[]>([{ ...emptyEducation }, { ...trash }]);
+    const [educationInfos, setEducationInfos] = useState<educationInfo[]>([{ ...emptyEducation }]);
     const [educationDraftId, setEducationDraftId] = useState<string>(emptyEducation.id);
     const [experienceDraftId, setExperienceDraftId] = useState<string>(emptyExperience.id);
-    const [savedEducation, setSavedEducation] = useState<educationInfo>({ ...emptyEducation });
-    const [savedExperience, setSavedExperience] = useState<experienceInfo>({ ...emptyExperience });
 
     return (
         <div className='app-container'>
@@ -108,22 +140,55 @@ function App() {
                 <EducationSection
                     onChange={e => handleEdits<educationInfo>(e, setEducationInfos, educationDraftId)}
                     educationInfo={educationInfos.find(info => info.id === educationDraftId) || educationInfos[0]}
-                    onSave={e => handleSaveDraft<educationInfo>(e, setSavedEducation, educationInfos, educationDraftId)}
+                    onSave={e => handleSaveDraft<educationInfo>(e, setEducationInfos, setEducationDraftId, createEmptyEducation, educationInfos, educationDraftId)}
                 ></EducationSection>
-                <div className='education-list-container'>
-                    {educationInfos.map(info => {
-                        return (
-                            <div key={info.id} className='education-list-item' data-id={info.id}>
-                                <p>{info.school}</p>
-                                <button type="button" className="general-section-edit-button" onClick={e => handleEditDraft(e, setEducationDraftId)} data-id={info.id}>Edit</button>
-                            </div>
-                        )
-                    })}
+                <div className='list-container'>
+                    {educationInfos.length == 1
+                        ? null
+                        : educationInfos.filter(info => info.id !== educationDraftId)
+                            .map(info => {
+                                return (
+                                    <div key={info.id} className='list-item' data-id={info.id}>
+                                        <p>{info.school}</p>
+                                        <div className="list-buttons-container">
+                                            <button type="button" className="general-section-edit-button"
+                                                onClick={e => handleEditDraft(e, setEducationDraftId)} data-id={info.id}>
+                                                Edit
+                                            </button>
+                                            <button type="button" className="general-section-edit-button"
+                                                onClick={e => handleDelete(e, setEducationInfos, setEducationDraftId, info.id)} data-id={info.id}>
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                )
+                            })}
                 </div>
                 <ExperienceSection
                     onChange={e => handleEdits<experienceInfo>(e, setExperienceInfos, experienceDraftId)}
-                    experienceInfo={experienceInfos.find(info => info.id === experienceDraftId || experienceInfos[0].id)!}
+                    experienceInfo={experienceInfos.find(info => info.id === experienceDraftId) || experienceInfos[0]}
+                    onSave={e => handleSaveDraft<experienceInfo>(e, setExperienceInfos, setExperienceDraftId, createEmptyExperience, experienceInfos, experienceDraftId)}
                 ></ExperienceSection>
+                <div className='list-container'>
+                    {experienceInfos.length == 1
+                        ? null
+                        : experienceInfos.filter(info => info.id !== experienceDraftId)
+                            .map(info => {
+                                return (
+                                    <div key={info.id} className='list-item' data-id={info.id}>
+                                        <p>{info.companyName}</p>
+                                        <button type="button" className="general-section-edit-button"
+                                            onClick={e => handleEditDraft(e, setExperienceDraftId)} data-id={info.id}>
+                                            Edit
+                                        </button>
+                                        <button type="button" className="general-section-edit-button"
+                                            onClick={e => handleDelete(e, setExperienceInfos, setExperienceDraftId, info.id)} data-id={info.id}>
+                                            Delete
+                                        </button>
+                                    </div>
+                                )
+                            })}
+                </div>
             </div>
             <Resume personalInfo={personalInfo} educationInfos={educationInfos} experienceInfos={experienceInfos}></Resume>
         </div>

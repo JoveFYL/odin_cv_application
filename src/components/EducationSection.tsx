@@ -21,7 +21,6 @@ function EducationSection({ educationInfo, onChange, onSave }: { onSave: (e: Rea
             </div>
             <div className="buttons-container">
                 <button type="submit" className="general-section-submit-button" onClick={onSave}>Save</button>
-                <button type="button" className="general-section-add-button">Add</button>
             </div>
         </form >
     )
