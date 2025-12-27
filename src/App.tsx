@@ -155,7 +155,7 @@ function App() {
                                                 onClick={e => handleEditDraft(e, setEducationDraftId)} data-id={info.id}>
                                                 Edit
                                             </button>
-                                            <button type="button" className="general-section-edit-button"
+                                            <button type="button" className="general-section-edit-button delete-button"
                                                 onClick={e => handleDelete(e, setEducationInfos, setEducationDraftId, info.id)} data-id={info.id}>
                                                 Delete
                                             </button>
@@ -177,14 +177,16 @@ function App() {
                                 return (
                                     <div key={info.id} className='list-item' data-id={info.id}>
                                         <p>{info.companyName}</p>
-                                        <button type="button" className="general-section-edit-button"
-                                            onClick={e => handleEditDraft(e, setExperienceDraftId)} data-id={info.id}>
-                                            Edit
-                                        </button>
-                                        <button type="button" className="general-section-edit-button"
-                                            onClick={e => handleDelete(e, setExperienceInfos, setExperienceDraftId, info.id)} data-id={info.id}>
-                                            Delete
-                                        </button>
+                                        <div className="list-buttons-container">
+                                            <button type="button" className="general-section-edit-button"
+                                                onClick={e => handleEditDraft(e, setExperienceDraftId)} data-id={info.id}>
+                                                Edit
+                                            </button>
+                                            <button type="button" className="general-section-edit-button delete-button"
+                                                onClick={e => handleDelete(e, setExperienceInfos, setExperienceDraftId, info.id)} data-id={info.id}>
+                                                Delete
+                                            </button>
+                                        </div>
                                     </div>
                                 )
                             })}

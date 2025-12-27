@@ -14,10 +14,8 @@ function Resume({ personalInfo, educationInfos, experienceInfos }: { personalInf
                 </div>
             </div>
             <div className='resume-section-container' data-form='education'>
-                <h2>you have {educationInfos.length} educations</h2>
                 <h2 className='resume-h2'>Education</h2>
                 {educationInfos.map(info => {
-                    console.log(info);
                     return <EducationSectionContent key={info.id} {...info}></EducationSectionContent>
                 })}
             </div>
